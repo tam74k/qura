@@ -15,7 +15,6 @@
 
   <style>
     :root{
-      /* ثيم جديد هادئ */
       --bg1:#f4fbf9;
       --bg2:#eef7ff;
       --card: rgba(255,255,255,.92);
@@ -23,15 +22,14 @@
       --muted:#5b6b7b;
       --border: rgba(15, 23, 42, .10);
 
-      --primary:#0ea5a4;   /* تركوازي */
-      --primary2:#16a34a;  /* أخضر */
+      --primary:#0ea5a4;
+      --primary2:#16a34a;
       --accent:#0b3b5a;
 
       --shadow: 0 18px 55px rgba(2, 6, 23, .12);
       --radius:20px;
     }
 
-    /* Cairo لكل شيء */
     html, body{
       font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
@@ -45,8 +43,6 @@
       margin:0;
       color:var(--text);
       direction: rtl;
-
-      /* خلفية مناسبة: تدرجات + لمعة خفيفة */
       background:
         radial-gradient(900px 500px at 80% 10%, rgba(14,165,164,.18), transparent 60%),
         radial-gradient(800px 480px at 15% 15%, rgba(22,163,74,.12), transparent 55%),
@@ -72,6 +68,22 @@
       backdrop-filter: blur(10px);
     }
 
+    /* ملاحظة بارزة باللون الأحمر */
+    .alert-note{
+      border: 1px solid rgba(220, 38, 38, .28);
+      background: rgba(220, 38, 38, .08);
+      color: #b91c1c;
+      border-radius: 16px;
+      padding: 12px 12px;
+      font-weight: 900;
+      line-height: 1.8;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .alert-note strong{
+      color: #7f1d1d;
+    }
+
     .header{
       text-align:center;
       display:flex;
@@ -81,7 +93,6 @@
       margin-bottom:8px;
     }
 
-    /* شعار دائري من images/logo.png */
     .app-logo {
       width: 200px;
       height: 200px;
@@ -229,7 +240,6 @@
     .status.ok{color:#0f766e}
     .status.err{color:#b91c1c}
 
-    /* شاشة الشكر */
     .thankyou{
       text-align:center;
       padding:14px 10px 6px;
@@ -259,13 +269,19 @@
 <body>
   <main class="page">
     <section class="card">
+
+      <!-- الملاحظة البارزة (بداية الصفحة) -->
+      <div class="alert-note">
+        <strong>تنبيه مهم:</strong> يرجى استخدام <strong>الأرقام الإنجليزية</strong> عند كتابة (رقم الموبايل / رقم الشعبة) مثل: 1 2 3
+      </div>
+
       <header class="header">
         <div class="app-logo" aria-label="شعار المدرسة"></div>
         <h1 class="title">مدرسة أم القرى الخاصة</h1>
       </header>
 
       <p class="subtitle">
-        حرصاً من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور فنرجو منكم تعبئة البيانات التالية بدقة.
+        حرصاً من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور, نرجو منكم التفضل بتعبئة البيانات التالية بدقة.
       </p>
 
       <div class="steps" id="stepsBar">
@@ -374,15 +390,15 @@
   </main>
 
   <script>
-    // ====== 1) Supabase Config (عدّل البيانات) ======
+    // ====== Supabase Config ======
     const SUPABASE_URL = "https://exjfmrguqqvyclcmuzks.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4amZtcmd1cXF2eWNsY211emtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwNTE0MTMsImV4cCI6MjA4MTYyNzQxM30.jgo6xOjHWOMbwQftZW-IEq967_JxsJ2CDVpeH3L8gNc";
 
-    // عند استخدام CDN يتم الوصول إلى createClient من المتغير العالمي supabase. [web:35][web:36]
+    // CDN: createClient من المتغير العالمي supabase. [web:35][web:36]
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // [web:35]
 
-    // ====== 2) DOM ======
+    // ====== DOM ======
     const form = document.getElementById("form");
     const statusEl = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
@@ -398,7 +414,7 @@
     const newEntryBtn = document.getElementById("newEntryBtn");
     const thankText = document.getElementById("thankText");
 
-    // ====== 3) Data ======
+    // ====== Data ======
     const classesByStage = {
       "رياض اطفال": ["KG1", "KG2"],
       "ابتدائي": [
@@ -408,7 +424,6 @@
       "اعدادي": ["الأول الإعدادي", "الثاني الإعدادي", "الثالث الإعدادي"]
     };
 
-    // ====== 4) Helpers ======
     function setStatus(msg, type){
       statusEl.classList.remove("ok","err");
       if(type) statusEl.classList.add(type);
@@ -442,7 +457,6 @@
       return true;
     }
 
-    // ====== 5) Wizard events ======
     document.querySelectorAll("[data-next]").forEach(btn => {
       btn.addEventListener("click", () => {
         const n = currentStep();
@@ -458,7 +472,6 @@
       btn.addEventListener("click", () => goStep(currentStep() - 1));
     });
 
-    // فلترة الفصل حسب المرحلة
     stageEl.addEventListener("change", () => {
       const stage = stageEl.value;
       const list = classesByStage[stage] || [];
@@ -472,7 +485,6 @@
       });
     });
 
-    // ====== 6) Submit ======
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -497,14 +509,13 @@
       };
 
       try {
-        // Insert into Supabase [web:14]
+        // Insert [web:14]
         const { error } = await sb
           .from("parent_contacts")
           .insert(payload);
 
         if(error) throw error;
 
-        // شاشة شكر باسم ولي الأمر
         thankText.textContent = `شكراً للأستاذ/ة ${parentName}، تم استلام بياناتكم بنجاح، شاكرين تعاونكم.`;
 
         setStatus("");
@@ -520,7 +531,6 @@
       }
     });
 
-    // إدخال جديد
     newEntryBtn.addEventListener("click", () => {
       thankYouEl.hidden = true;
       form.hidden = false;
@@ -532,7 +542,6 @@
       goStep(1);
     });
 
-    // Init
     goStep(1);
   </script>
 </body>
