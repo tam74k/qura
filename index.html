@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>مدرسة أم القرى الخاصة - بيانات التواصل</title>
 
-  <!-- Cairo (Google Fonts) -->
+  <!-- Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -15,24 +15,28 @@
 
   <style>
     :root{
-      --bg1:#f6f8fc;
-      --bg2:#eef3ff;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e6eaf2;
-      --primary:#2f6fed;
-      --primary2:#1f4fd6;
-      --shadow: 0 18px 50px rgba(15,23,42,.10);
-      --radius:18px;
+      /* ثيم جديد هادئ */
+      --bg1:#f4fbf9;
+      --bg2:#eef7ff;
+      --card: rgba(255,255,255,.92);
+      --text:#0b1220;
+      --muted:#5b6b7b;
+      --border: rgba(15, 23, 42, .10);
+
+      --primary:#0ea5a4;   /* تركوازي */
+      --primary2:#16a34a;  /* أخضر */
+      --accent:#0b3b5a;
+
+      --shadow: 0 18px 55px rgba(2, 6, 23, .12);
+      --radius:20px;
     }
 
-    /* تطبيق Cairo على كل شيء (نصوص + أزرار + حقول) */
+    /* Cairo لكل شيء */
     html, body{
-      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
     *, button, input, select, textarea{
-      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+      font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
     }
 
     *{box-sizing:border-box}
@@ -40,11 +44,14 @@
     body{
       margin:0;
       color:var(--text);
-      background:
-        radial-gradient(900px 450px at 85% 10%, rgba(47,111,237,.14), transparent 60%),
-        radial-gradient(700px 400px at 10% 15%, rgba(99,102,241,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
       direction: rtl;
+
+      /* خلفية مناسبة: تدرجات + لمعة خفيفة */
+      background:
+        radial-gradient(900px 500px at 80% 10%, rgba(14,165,164,.18), transparent 60%),
+        radial-gradient(800px 480px at 15% 15%, rgba(22,163,74,.12), transparent 55%),
+        radial-gradient(700px 420px at 50% 110%, rgba(59,130,246,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
     .page{
@@ -56,12 +63,13 @@
     }
 
     .card{
-      width:min(720px, 100%);
+      width:min(760px, 100%);
       background:var(--card);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       padding:22px;
+      backdrop-filter: blur(10px);
     }
 
     .header{
@@ -80,11 +88,9 @@
       background: white url('images/logo.png') no-repeat center center;
       background-size: contain;
       border-radius: 50%;
-      border: 2px solid #eee;
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+      border: 1px solid rgba(2, 6, 23, .10);
+      box-shadow: 0 12px 30px rgba(2,6,23,.10);
     }
-
-    /* للتجاوب مع الشاشات الصغيرة */
     @media (max-width: 480px) {
       .app-logo { width: 120px; height: 120px; }
     }
@@ -94,15 +100,16 @@
 
     .title{
       margin:0;
-      font-size:clamp(20px, 3.2vw, 28px);
+      font-size:clamp(20px, 3.2vw, 30px);
       letter-spacing:.2px;
+      color: var(--accent);
     }
     .subtitle{
       margin:10px 0 14px;
       color:var(--muted);
       line-height:1.9;
       text-align:center;
-      font-size:14.5px;
+      font-size:14.8px;
     }
 
     .steps{
@@ -112,36 +119,36 @@
       margin:10px 0 16px;
     }
     .step{
-      width:36px;height:36px;
+      width:38px;height:38px;
       display:flex;align-items:center;justify-content:center;
       border-radius:999px;
       border:1px solid var(--border);
       color:var(--muted);
-      background:#fbfcff;
-      font-weight:700;
+      background: rgba(255,255,255,.65);
+      font-weight:800;
       user-select:none;
     }
     .step.is-active{
-      border-color:rgba(47,111,237,.28);
-      color:var(--primary2);
-      background:rgba(47,111,237,.10);
+      border-color: rgba(14,165,164,.35);
+      color: #075985;
+      background: linear-gradient(135deg, rgba(14,165,164,.18), rgba(22,163,74,.16));
     }
 
     .section-title{
       margin:0 0 12px;
       font-size:16px;
+      color: #0f2a3a;
     }
 
     .form-step{display:none; animation:fadeUp .22s ease both;}
     .form-step.is-active{display:block;}
-
     @keyframes fadeUp{
       from{opacity:0; transform:translateY(8px)}
       to{opacity:1; transform:translateY(0)}
     }
 
     .field{margin:12px 0}
-    label{display:block; font-weight:700; margin-bottom:6px; font-size:14px;}
+    label{display:block; font-weight:800; margin-bottom:6px; font-size:14px;}
     input, select{
       width:100%;
       padding:12px 12px;
@@ -149,11 +156,11 @@
       border:1px solid var(--border);
       outline:none;
       font-size:14px;
-      background:#fff;
+      background: rgba(255,255,255,.85);
     }
     input:focus, select:focus{
-      border-color: rgba(47,111,237,.45);
-      box-shadow: 0 0 0 4px rgba(47,111,237,.10);
+      border-color: rgba(14,165,164,.50);
+      box-shadow: 0 0 0 4px rgba(14,165,164,.14);
     }
     .hint{display:block; margin-top:6px; color:var(--muted); font-size:12.5px; line-height:1.6}
 
@@ -172,9 +179,9 @@
       align-items:flex-start;
       margin:14px 0 6px;
       color:var(--text);
-      line-height:1.7;
+      line-height:1.8;
     }
-    .check input{width:18px; height:18px; margin-top:3px}
+    .check input{width:18px; height:18px; margin-top:4px}
 
     .actions{
       display:flex;
@@ -186,21 +193,23 @@
       border:0;
       border-radius:14px;
       padding:11px 14px;
-      font-weight:800;
+      font-weight:900;
       font-size:14px;
       cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease, background .12s ease;
     }
     .btn:active{transform:translateY(1px)}
+    .btn:disabled{opacity:.65; cursor:not-allowed}
 
     .btn-primary{
       background: linear-gradient(135deg, var(--primary), var(--primary2));
       color:#fff;
-      box-shadow: 0 10px 24px rgba(47,111,237,.22);
+      box-shadow: 0 12px 28px rgba(14,165,164,.18);
       width: 50%;
     }
+    .btn-primary:hover{filter: brightness(1.03)}
     .btn-ghost{
-      background:#f6f8ff;
+      background: rgba(255,255,255,.75);
       color:var(--text);
       border:1px solid var(--border);
       width: 45%;
@@ -215,9 +224,35 @@
       font-size:14px;
       color:var(--muted);
       min-height:22px;
+      text-align:center;
     }
     .status.ok{color:#0f766e}
     .status.err{color:#b91c1c}
+
+    /* شاشة الشكر */
+    .thankyou{
+      text-align:center;
+      padding:14px 10px 6px;
+      animation: fadeUp .22s ease both;
+    }
+    .thankyou-box{
+      margin-top:14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(14,165,164,.10), rgba(22,163,74,.08));
+    }
+    .big-check{
+      width:64px;height:64px;
+      margin:0 auto 10px;
+      border-radius:999px;
+      display:flex;align-items:center;justify-content:center;
+      background: rgba(22,163,74,.12);
+      border: 1px solid rgba(22,163,74,.25);
+      color: #166534;
+      font-weight: 900;
+      font-size: 28px;
+    }
   </style>
 </head>
 
@@ -230,10 +265,10 @@
       </header>
 
       <p class="subtitle">
-        حرصًا من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور، نرجو منكم التفضل بتعبئة البيانات التالية بدقة.
+        حرصاً من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور فنرجو منكم تعبئة البيانات التالية بدقة.
       </p>
 
-      <div class="steps">
+      <div class="steps" id="stepsBar">
         <div class="step is-active">1</div>
         <div class="step">2</div>
         <div class="step">3</div>
@@ -301,7 +336,7 @@
           <div class="field">
             <label for="parent_mobile">رقم موبايل ولي الأمر</label>
             <input id="parent_mobile" name="parent_mobile" type="tel" inputmode="tel" placeholder="01xxxxxxxxx" required />
-            <small class="hint">أؤكد أن الرقم يخص ولي الأمر وأن يكون رقم فعال للتواصل.</small>
+            <small class="hint">يفضل كتابة الرقم بدون مسافات، ويجب أن يكون رقم ولي الأمر الفعّال.</small>
           </div>
 
           <label class="check">
@@ -317,29 +352,53 @@
           <div class="status" id="status" aria-live="polite"></div>
         </section>
       </form>
+
+      <!-- Thank You Screen -->
+      <section id="thankYou" class="thankyou" hidden>
+        <div class="thankyou-box">
+          <div class="big-check">✓</div>
+          <h2 class="section-title" style="margin-bottom:6px;">شكراً لولي الأمر</h2>
+          <p class="subtitle" id="thankText" style="margin:0;">
+            تم استلام بياناتكم بنجاح، شاكرين تعاونكم.
+          </p>
+
+          <div class="actions" style="margin-top:16px; justify-content:center;">
+            <button type="button" class="btn btn-primary" id="newEntryBtn" style="width:min(320px,100%);">
+              إدخال بيانات جديدة
+            </button>
+          </div>
+        </div>
+      </section>
+
     </section>
   </main>
 
   <script>
-    // ====== Supabase Config ======
+    // ====== 1) Supabase Config (عدّل البيانات) ======
     const SUPABASE_URL = "https://exjfmrguqqvyclcmuzks.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4amZtcmd1cXF2eWNsY211emtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwNTE0MTMsImV4cCI6MjA4MTYyNzQxM30.jgo6xOjHWOMbwQftZW-IEq967_JxsJ2CDVpeH3L8gNc";
 
-    // استخدام supabase-js من CDN عبر المتغير العالمي supabase. [web:36]
+    // عند استخدام CDN يتم الوصول إلى createClient من المتغير العالمي supabase. [web:35][web:36]
     const { createClient } = supabase;
-    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // تهيئة العميل [web:35]
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // [web:35]
 
-    // ====== App Logic ======
+    // ====== 2) DOM ======
     const form = document.getElementById("form");
     const statusEl = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
 
+    const stepsBar = document.getElementById("stepsBar");
     const stepsDots = document.querySelectorAll(".step");
     const steps = document.querySelectorAll(".form-step");
 
     const stageEl = document.getElementById("stage");
     const classEl = document.getElementById("class_name");
 
+    const thankYouEl = document.getElementById("thankYou");
+    const newEntryBtn = document.getElementById("newEntryBtn");
+    const thankText = document.getElementById("thankText");
+
+    // ====== 3) Data ======
     const classesByStage = {
       "رياض اطفال": ["KG1", "KG2"],
       "ابتدائي": [
@@ -349,6 +408,7 @@
       "اعدادي": ["الأول الإعدادي", "الثاني الإعدادي", "الثالث الإعدادي"]
     };
 
+    // ====== 4) Helpers ======
     function setStatus(msg, type){
       statusEl.classList.remove("ok","err");
       if(type) statusEl.classList.add(type);
@@ -382,6 +442,7 @@
       return true;
     }
 
+    // ====== 5) Wizard events ======
     document.querySelectorAll("[data-next]").forEach(btn => {
       btn.addEventListener("click", () => {
         const n = currentStep();
@@ -397,6 +458,7 @@
       btn.addEventListener("click", () => goStep(currentStep() - 1));
     });
 
+    // فلترة الفصل حسب المرحلة
     stageEl.addEventListener("change", () => {
       const stage = stageEl.value;
       const list = classesByStage[stage] || [];
@@ -410,6 +472,7 @@
       });
     });
 
+    // ====== 6) Submit ======
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -421,9 +484,11 @@
       submitBtn.disabled = true;
       setStatus("جارٍ الإرسال...");
 
+      const parentName = document.getElementById("parent_name").value.trim();
+
       const payload = {
         student_name: document.getElementById("student_name").value.trim(),
-        parent_name: document.getElementById("parent_name").value.trim(),
+        parent_name: parentName,
         stage: stageEl.value,
         class_name: classEl.value,
         section_number: Number(document.getElementById("section_number").value),
@@ -439,10 +504,15 @@
 
         if(error) throw error;
 
-        setStatus("تم الإرسال بنجاح. شكراً لتعاونكم.", "ok");
-        form.reset();
-        classEl.innerHTML = `<option value="" selected disabled>اختر الفصل</option>`;
-        goStep(1);
+        // شاشة شكر باسم ولي الأمر
+        thankText.textContent = `شكراً للأستاذ/ة ${parentName}، تم استلام بياناتكم بنجاح، شاكرين تعاونكم.`;
+
+        setStatus("");
+        form.hidden = true;
+        stepsBar.hidden = true;
+        thankYouEl.hidden = false;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         setStatus(`تعذر الإرسال: ${err.message || err}`, "err");
       } finally {
@@ -450,6 +520,19 @@
       }
     });
 
+    // إدخال جديد
+    newEntryBtn.addEventListener("click", () => {
+      thankYouEl.hidden = true;
+      form.hidden = false;
+      stepsBar.hidden = false;
+
+      form.reset();
+      classEl.innerHTML = `<option value="" selected disabled>اختر الفصل</option>`;
+      setStatus("");
+      goStep(1);
+    });
+
+    // Init
     goStep(1);
   </script>
 </body>
