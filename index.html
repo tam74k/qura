@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مدرسة أم القرى الخاصة - بيانات التواصل</title>
+
+  <!-- Cairo (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Supabase JS v2 (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --bg1:#f6f8fc;
+      --bg2:#eef3ff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e6eaf2;
+      --primary:#2f6fed;
+      --primary2:#1f4fd6;
+      --shadow: 0 18px 50px rgba(15,23,42,.10);
+      --radius:18px;
+    }
+
+    /* تطبيق Cairo على كل شيء (نصوص + أزرار + حقول) */
+    html, body{
+      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    *, button, input, select, textarea{
+      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(900px 450px at 85% 10%, rgba(47,111,237,.14), transparent 60%),
+        radial-gradient(700px 400px at 10% 15%, rgba(99,102,241,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      direction: rtl;
+    }
+
+    .page{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px 14px;
+    }
+
+    .card{
+      width:min(720px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+
+    .header{
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    /* شعار دائري من images/logo.png */
+    .app-logo {
+      width: 200px;
+      height: 200px;
+      background: white url('images/logo.png') no-repeat center center;
+      background-size: contain;
+      border-radius: 50%;
+      border: 2px solid #eee;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    /* للتجاوب مع الشاشات الصغيرة */
+    @media (max-width: 480px) {
+      .app-logo { width: 120px; height: 120px; }
+    }
+    @media (min-width: 481px) and (max-width: 768px) {
+      .app-logo { width: 160px; height: 160px; }
+    }
+
+    .title{
+      margin:0;
+      font-size:clamp(20px, 3.2vw, 28px);
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:10px 0 14px;
+      color:var(--muted);
+      line-height:1.9;
+      text-align:center;
+      font-size:14.5px;
+    }
+
+    .steps{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin:10px 0 16px;
+    }
+    .step{
+      width:36px;height:36px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background:#fbfcff;
+      font-weight:700;
+      user-select:none;
+    }
+    .step.is-active{
+      border-color:rgba(47,111,237,.28);
+      color:var(--primary2);
+      background:rgba(47,111,237,.10);
+    }
+
+    .section-title{
+      margin:0 0 12px;
+      font-size:16px;
+    }
+
+    .form-step{display:none; animation:fadeUp .22s ease both;}
+    .form-step.is-active{display:block;}
+
+    @keyframes fadeUp{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    .field{margin:12px 0}
+    label{display:block; font-weight:700; margin-bottom:6px; font-size:14px;}
+    input, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+    input:focus, select:focus{
+      border-color: rgba(47,111,237,.45);
+      box-shadow: 0 0 0 4px rgba(47,111,237,.10);
+    }
+    .hint{display:block; margin-top:6px; color:var(--muted); font-size:12.5px; line-height:1.6}
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 640px){
+      .grid2{grid-template-columns:1fr;}
+    }
+
+    .check{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin:14px 0 6px;
+      color:var(--text);
+      line-height:1.7;
+    }
+    .check input{width:18px; height:18px; margin-top:3px}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      justify-content:space-between;
+    }
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:11px 14px;
+      font-weight:800;
+      font-size:14px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+
+    .btn-primary{
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color:#fff;
+      box-shadow: 0 10px 24px rgba(47,111,237,.22);
+      width: 50%;
+    }
+    .btn-ghost{
+      background:#f6f8ff;
+      color:var(--text);
+      border:1px solid var(--border);
+      width: 45%;
+    }
+    @media (max-width: 520px){
+      .actions{flex-direction:column}
+      .btn-primary,.btn-ghost{width:100%}
+    }
+
+    .status{
+      margin-top:12px;
+      font-size:14px;
+      color:var(--muted);
+      min-height:22px;
+    }
+    .status.ok{color:#0f766e}
+    .status.err{color:#b91c1c}
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="card">
+      <header class="header">
+        <div class="app-logo" aria-label="شعار المدرسة"></div>
+        <h1 class="title">مدرسة أم القرى الخاصة</h1>
+      </header>
+
+      <p class="subtitle">
+        حرصًا من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور، نرجو منكم التفضل بتعبئة البيانات التالية بدقة.
+      </p>
+
+      <div class="steps">
+        <div class="step is-active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+      </div>
+
+      <form id="form" novalidate>
+        <!-- Step 1 -->
+        <section class="form-step is-active" data-step="1">
+          <h2 class="section-title">بيانات الطالب</h2>
+
+          <div class="field">
+            <label for="student_name">اسم الطالب</label>
+            <input id="student_name" name="student_name" type="text" placeholder="اكتب اسم الطالب" required />
+            <small class="hint">مثال: محمد أحمد علي</small>
+          </div>
+
+          <div class="field">
+            <label for="parent_name">اسم ولي الأمر</label>
+            <input id="parent_name" name="parent_name" type="text" placeholder="اكتب اسم ولي الأمر" required />
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" data-next>التالي</button>
+          </div>
+        </section>
+
+        <!-- Step 2 -->
+        <section class="form-step" data-step="2">
+          <h2 class="section-title">المرحلة والفصل</h2>
+
+          <div class="grid2">
+            <div class="field">
+              <label for="stage">المرحلة</label>
+              <select id="stage" name="stage" required>
+                <option value="" selected disabled>اختر المرحلة</option>
+                <option value="رياض اطفال">رياض أطفال</option>
+                <option value="ابتدائي">ابتدائي</option>
+                <option value="اعدادي">إعدادي</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="class_name">الفصل</label>
+              <select id="class_name" name="class_name" required>
+                <option value="" selected disabled>اختر الفصل</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="section_number">رقم الشعبة (1 إلى 8)</label>
+            <input id="section_number" name="section_number" type="number" min="1" max="8" inputmode="numeric" placeholder="مثال: 3" required />
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-ghost" data-prev>السابق</button>
+            <button type="button" class="btn btn-primary" data-next>التالي</button>
+          </div>
+        </section>
+
+        <!-- Step 3 -->
+        <section class="form-step" data-step="3">
+          <h2 class="section-title">بيانات التواصل</h2>
+
+          <div class="field">
+            <label for="parent_mobile">رقم موبايل ولي الأمر</label>
+            <input id="parent_mobile" name="parent_mobile" type="tel" inputmode="tel" placeholder="01xxxxxxxxx" required />
+            <small class="hint">أؤكد أن الرقم يخص ولي الأمر وأن يكون رقم فعال للتواصل.</small>
+          </div>
+
+          <label class="check">
+            <input id="confirm_owner" name="confirm_owner" type="checkbox" required />
+            <span>أؤكد أن الرقم المسجل يخص ولي الأمر وليس الطالب وأن يكون رقم فعال.</span>
+          </label>
+
+          <div class="actions">
+            <button type="button" class="btn btn-ghost" data-prev>السابق</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">إرسال</button>
+          </div>
+
+          <div class="status" id="status" aria-live="polite"></div>
+        </section>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // ====== Supabase Config ======
+    const SUPABASE_URL = "https://exjfmrguqqvyclcmuzks.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4amZtcmd1cXF2eWNsY211emtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwNTE0MTMsImV4cCI6MjA4MTYyNzQxM30.jgo6xOjHWOMbwQftZW-IEq967_JxsJ2CDVpeH3L8gNc";
+
+    // استخدام supabase-js من CDN عبر المتغير العالمي supabase. [web:36]
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // تهيئة العميل [web:35]
+
+    // ====== App Logic ======
+    const form = document.getElementById("form");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const stepsDots = document.querySelectorAll(".step");
+    const steps = document.querySelectorAll(".form-step");
+
+    const stageEl = document.getElementById("stage");
+    const classEl = document.getElementById("class_name");
+
+    const classesByStage = {
+      "رياض اطفال": ["KG1", "KG2"],
+      "ابتدائي": [
+        "الأول الابتدائي", "الثاني الابتدائي", "الثالث الابتدائي",
+        "الرابع الابتدائي", "الخامس الابتدائي", "السادس الابتدائي"
+      ],
+      "اعدادي": ["الأول الإعدادي", "الثاني الإعدادي", "الثالث الإعدادي"]
+    };
+
+    function setStatus(msg, type){
+      statusEl.classList.remove("ok","err");
+      if(type) statusEl.classList.add(type);
+      statusEl.textContent = msg || "";
+    }
+
+    function goStep(n){
+      steps.forEach(s => s.classList.toggle("is-active", s.dataset.step === String(n)));
+      stepsDots.forEach((d, i) => d.classList.toggle("is-active", i === (n-1)));
+      setStatus("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function currentStep(){
+      const active = document.querySelector(".form-step.is-active");
+      return Number(active?.dataset.step || 1);
+    }
+
+    function validateStep(n){
+      const step = document.querySelector(`.form-step[data-step="${n}"]`);
+      const requiredInputs = step.querySelectorAll("input[required], select[required]");
+      for (const el of requiredInputs){
+        if(el.type === "checkbox" && !el.checked) return false;
+        if(el.type !== "checkbox" && !String(el.value || "").trim()) return false;
+
+        if(el.id === "section_number"){
+          const v = Number(el.value);
+          if(!(v >= 1 && v <= 8)) return false;
+        }
+      }
+      return true;
+    }
+
+    document.querySelectorAll("[data-next]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const n = currentStep();
+        if(!validateStep(n)){
+          setStatus("من فضلك أكمل بيانات هذه الصفحة بشكل صحيح.", "err");
+          return;
+        }
+        goStep(n + 1);
+      });
+    });
+
+    document.querySelectorAll("[data-prev]").forEach(btn => {
+      btn.addEventListener("click", () => goStep(currentStep() - 1));
+    });
+
+    stageEl.addEventListener("change", () => {
+      const stage = stageEl.value;
+      const list = classesByStage[stage] || [];
+
+      classEl.innerHTML = `<option value="" selected disabled>اختر الفصل</option>`;
+      list.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        classEl.appendChild(opt);
+      });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if(!validateStep(3)){
+        setStatus("من فضلك أكمل بيانات هذه الصفحة بشكل صحيح.", "err");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      setStatus("جارٍ الإرسال...");
+
+      const payload = {
+        student_name: document.getElementById("student_name").value.trim(),
+        parent_name: document.getElementById("parent_name").value.trim(),
+        stage: stageEl.value,
+        class_name: classEl.value,
+        section_number: Number(document.getElementById("section_number").value),
+        parent_mobile: document.getElementById("parent_mobile").value.trim(),
+        confirm_owner: document.getElementById("confirm_owner").checked
+      };
+
+      try {
+        // Insert into Supabase [web:14]
+        const { error } = await sb
+          .from("parent_contacts")
+          .insert(payload);
+
+        if(error) throw error;
+
+        setStatus("تم الإرسال بنجاح. شكراً لتعاونكم.", "ok");
+        form.reset();
+        classEl.innerHTML = `<option value="" selected disabled>اختر الفصل</option>`;
+        goStep(1);
+      } catch (err) {
+        setStatus(`تعذر الإرسال: ${err.message || err}`, "err");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    goStep(1);
+  </script>
+</body>
+</html>
