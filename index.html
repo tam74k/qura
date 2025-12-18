@@ -68,16 +68,19 @@
       backdrop-filter: blur(10px);
     }
 
-    /* ملاحظة بارزة باللون الأحمر */
+    /* ملاحظة باللون الأحمر (صغيرة وتحت سطر "حرصاً...") */
     .alert-note{
-      border: 1px solid rgba(220, 38, 38, .28);
-      background: rgba(220, 38, 38, .08);
+      border: 1px solid rgba(220, 38, 38, .22);
+      background: rgba(220, 38, 38, .06);
       color: #b91c1c;
-      border-radius: 16px;
-      padding: 12px 12px;
-      font-weight: 900;
-      line-height: 1.8;
-      margin-bottom: 14px;
+      border-radius: 14px;
+      padding: 10px 12px;
+
+      font-weight: 800;
+      font-size: 13px;       /* أصغر قليلاً */
+      line-height: 1.85;
+
+      margin: -6px auto 14px; /* أقرب للسطر الذي فوقها */
       text-align: center;
     }
     .alert-note strong{
@@ -270,11 +273,6 @@
   <main class="page">
     <section class="card">
 
-      <!-- الملاحظة البارزة (بداية الصفحة) -->
-      <div class="alert-note">
-        <strong>تنبيه مهم:</strong> يرجى استخدام <strong>الأرقام الإنجليزية</strong> عند كتابة (رقم الموبايل / رقم الشعبة) مثل: 1 2 3
-      </div>
-
       <header class="header">
         <div class="app-logo" aria-label="شعار المدرسة"></div>
         <h1 class="title">مدرسة أم القرى الخاصة</h1>
@@ -283,6 +281,11 @@
       <p class="subtitle">
         حرصاً من إدارة مدرسة أم القرى الخاصة على سرعة التواصل مع أولياء الأمور, نرجو منكم التفضل بتعبئة البيانات التالية بدقة.
       </p>
+
+      <!-- تم نقل الملاحظة هنا (تحت سطر "حرصاً...") -->
+      <div class="alert-note">
+        <strong>تنبيه مهم:</strong> يرجى استخدام <strong>الأرقام الإنجليزية</strong> عند كتابة (رقم الموبايل / رقم الشعبة) مثل: 1 2 3
+      </div>
 
       <div class="steps" id="stepsBar">
         <div class="step is-active">1</div>
@@ -394,9 +397,8 @@
     const SUPABASE_URL = "https://exjfmrguqqvyclcmuzks.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4amZtcmd1cXF2eWNsY211emtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwNTE0MTMsImV4cCI6MjA4MTYyNzQxM30.jgo6xOjHWOMbwQftZW-IEq967_JxsJ2CDVpeH3L8gNc";
 
-    // CDN: createClient من المتغير العالمي supabase. [web:35][web:36]
     const { createClient } = supabase;
-    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // [web:35]
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ====== DOM ======
     const form = document.getElementById("form");
@@ -509,10 +511,9 @@
       };
 
       try {
-        // Insert [web:14]
         const { error } = await sb
           .from("parent_contacts")
-          .insert(payload);
+          .insert(payload); // insert [web:14]
 
         if(error) throw error;
 
