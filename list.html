@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مدرسة أم القرى الخاصة - عرض البيانات</title>
+
+  <!-- Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Supabase JS v2 (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --bg1:#f4fbf9;
+      --bg2:#eef7ff;
+      --card: rgba(255,255,255,.92);
+      --text:#0b1220;
+      --muted:#5b6b7b;
+      --border: rgba(15, 23, 42, .10);
+
+      --primary:#0ea5a4;
+      --primary2:#16a34a;
+      --accent:#0b3b5a;
+
+      --shadow: 0 18px 55px rgba(2, 6, 23, .12);
+      --radius:20px;
+    }
+
+    html, body{font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
+    *, button, input, select, textarea{font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;}
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      direction: rtl;
+      background:
+        radial-gradient(900px 500px at 80% 10%, rgba(14,165,164,.18), transparent 60%),
+        radial-gradient(800px 480px at 15% 15%, rgba(22,163,74,.12), transparent 55%),
+        radial-gradient(700px 420px at 50% 110%, rgba(59,130,246,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .page{
+      min-height:100%;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:22px 14px;
+    }
+
+    .card{
+      width:min(1050px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      backdrop-filter: blur(10px);
+    }
+
+    .header{
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .app-logo{
+      width: 170px;
+      height: 170px;
+      background: white url('images/logo.png') no-repeat center center;
+      background-size: contain;
+      border-radius: 50%;
+      border: 1px solid rgba(2, 6, 23, .10);
+      box-shadow: 0 12px 30px rgba(2,6,23,.10);
+    }
+    @media (max-width: 480px){
+      .app-logo{width:120px;height:120px;}
+    }
+
+    .title{
+      margin:0;
+      font-size:clamp(18px, 3.2vw, 28px);
+      letter-spacing:.2px;
+      color: var(--accent);
+    }
+
+    .subtitle{
+      margin:10px 0 14px;
+      color:var(--muted);
+      line-height:1.9;
+      text-align:center;
+      font-size:14.5px;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap:12px;
+      align-items:end;
+      margin: 10px 0 14px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,.65);
+    }
+    @media (max-width: 900px){
+      .filters{grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px){
+      .filters{grid-template-columns: 1fr; }
+    }
+
+    .field label{
+      display:block;
+      font-weight:800;
+      margin-bottom:6px;
+      font-size:13.5px;
+    }
+    select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      outline:none;
+      font-size:14px;
+      background: rgba(255,255,255,.85);
+    }
+    select:focus{
+      border-color: rgba(14,165,164,.50);
+      box-shadow: 0 0 0 4px rgba(14,165,164,.14);
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+      width: 100%;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color:#fff;
+      box-shadow: 0 12px 28px rgba(14,165,164,.18);
+    }
+
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 10px 0 10px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .table-wrap{
+      border:1px solid var(--border);
+      border-radius: 18px;
+      overflow:auto;
+      background: rgba(255,255,255,.72);
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width: 900px;
+    }
+
+    thead th{
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: linear-gradient(135deg, rgba(14,165,164,.14), rgba(22,163,74,.10));
+      color: #0f2a3a;
+      text-align: right;
+      padding: 12px 12px;
+      font-size: 13.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td{
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(15, 23, 42, .08);
+      font-size: 14px;
+      white-space: nowrap;
+      background: rgba(255,255,255,.65);
+    }
+
+    tbody tr:hover td{
+      background: rgba(14,165,164,.06);
+    }
+
+    .status{
+      margin-top: 10px;
+      text-align:center;
+      font-size:14px;
+      color: var(--muted);
+      min-height: 22px;
+    }
+    .status.err{color:#b91c1c}
+    .status.ok{color:#0f766e}
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.7);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="card">
+
+      <header class="header">
+        <div class="app-logo" aria-label="شعار المدرسة"></div>
+        <h1 class="title">مدرسة أم القرى الخاصة</h1>
+      </header>
+
+      <p class="subtitle">
+        عرض بيانات أولياء الأمور المسجلة (مع التصفية حسب المرحلة والفصل والشعبة).
+      </p>
+
+      <div class="filters">
+        <div class="field">
+          <label for="stageFilter">المرحلة</label>
+          <select id="stageFilter">
+            <option value="__all__" selected>الكل</option>
+            <option value="رياض اطفال">رياض أطفال</option>
+            <option value="ابتدائي">ابتدائي</option>
+            <option value="اعدادي">إعدادي</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="classFilter">الصف / الفصل</label>
+          <select id="classFilter" disabled>
+            <option value="__all__" selected>الكل</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sectionFilter">الشعبة</label>
+          <select id="sectionFilter">
+            <option value="__all__" selected>الكل</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="refreshBtn" type="button">تحديث</button>
+      </div>
+
+      <div class="meta">
+        <span class="pill">عدد النتائج: <strong id="count">0</strong></span>
+        <span class="pill" id="sortHint">الترتيب: الصف/الفصل ← الشعبة ← اسم الطالب</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>اسم الطالب</th>
+              <th>اسم ولي الأمر</th>
+              <th>المرحلة</th>
+              <th>الصف/الفصل</th>
+              <th>الشعبة</th>
+              <th>موبايل ولي الأمر</th>
+              <th>تاريخ التسجيل</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    // ====== Supabase Config (نفس الإعدادات) ======
+    const SUPABASE_URL = "https://exjfmrguqqvyclcmuzks.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4amZtcmd1cXF2eWNsY211emtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwNTE0MTMsImV4cCI6MjA4MTYyNzQxM30.jgo6xOjHWOMbwQftZW-IEq967_JxsJ2CDVpeH3L8gNc";
+
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== عناصر ======
+    const stageFilter = document.getElementById("stageFilter");
+    const classFilter = document.getElementById("classFilter");
+    const sectionFilter = document.getElementById("sectionFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    const tbody = document.getElementById("tbody");
+    const countEl = document.getElementById("count");
+    const statusEl = document.getElementById("status");
+
+    const classesByStage = {
+      "رياض اطفال": ["KG1", "KG2"],
+      "ابتدائي": [
+        "الأول الابتدائي", "الثاني الابتدائي", "الثالث الابتدائي",
+        "الرابع الابتدائي", "الخامس الابتدائي", "السادس الابتدائي"
+      ],
+      "اعدادي": ["الأول الإعدادي", "الثاني الإعدادي", "الثالث الإعدادي"]
+    };
+
+    function setStatus(msg, type){
+      statusEl.classList.remove("ok", "err");
+      if(type) statusEl.classList.add(type);
+      statusEl.textContent = msg || "";
+    }
+
+    function formatDate(ts){
+      if(!ts) return "";
+      const d = new Date(ts);
+      return d.toLocaleString("ar-EG", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }
+
+    function rebuildClassFilter(){
+      const stageVal = stageFilter.value;
+
+      classFilter.innerHTML = `<option value="__all__" selected>الكل</option>`;
+
+      if(stageVal === "__all__"){
+        classFilter.disabled = true;
+        return;
+      }
+
+      classFilter.disabled = false;
+      const list = classesByStage[stageVal] || [];
+      for(const name of list){
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        classFilter.appendChild(opt);
+      }
+    }
+
+    function renderRows(rows){
+      tbody.innerHTML = "";
+      countEl.textContent = String(rows.length);
+
+      if(rows.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="8" style="text-align:center; color:#5b6b7b; padding:16px;">لا توجد بيانات مطابقة للتصفية.</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      rows.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${escapeHtml(r.student_name || "")}</td>
+          <td>${escapeHtml(r.parent_name || "")}</td>
+          <td>${escapeHtml(r.stage || "")}</td>
+          <td>${escapeHtml(r.class_name || "")}</td>
+          <td>${r.section_number ?? ""}</td>
+          <td>${escapeHtml(r.parent_mobile || "")}</td>
+          <td>${escapeHtml(formatDate(r.created_at))}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, (m) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    async function fetchData(){
+      setStatus("جارٍ تحميل البيانات...");
+
+      const stageVal = stageFilter.value;
+      const classVal = classFilter.value;
+      const sectionVal = sectionFilter.value;
+
+      // select + filters + multi-order
+      // ترتيب حسب class_name ثم section_number ثم student_name (كما طلبت) [web:128]
+      let q = sb
+        .from("parent_contacts")
+        .select("id, created_at, student_name, parent_name, stage, class_name, section_number, parent_mobile")
+        .order("class_name", { ascending: true })
+        .order("section_number", { ascending: true })
+        .order("student_name", { ascending: true });
+
+      if(stageVal !== "__all__") q = q.eq("stage", stageVal);
+      if(stageVal !== "__all__" && classVal !== "__all__") q = q.eq("class_name", classVal);
+      if(sectionVal !== "__all__") q = q.eq("section_number", Number(sectionVal));
+
+      const { data, error } = await q;
+
+      if(error){
+        setStatus("تعذر تحميل البيانات: " + (error.message || error), "err");
+        renderRows([]);
+        return;
+      }
+
+      renderRows(data || []);
+      setStatus("تم تحميل البيانات.", "ok");
+      setTimeout(() => setStatus(""), 1200);
+    }
+
+    // أحداث الفلاتر
+    stageFilter.addEventListener("change", async () => {
+      rebuildClassFilter();
+      await fetchData();
+    });
+
+    classFilter.addEventListener("change", fetchData);
+    sectionFilter.addEventListener("change", fetchData);
+    refreshBtn.addEventListener("click", fetchData);
+
+    // init
+    rebuildClassFilter();
+    fetchData();
+  </script>
+</body>
+</html>
